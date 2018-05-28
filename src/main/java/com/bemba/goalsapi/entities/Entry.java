@@ -11,9 +11,11 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -37,11 +39,9 @@ public class Entry implements Serializable {
 	private LocalDate date;
 
 	@ManyToOne
-	@JsonIgnore
+	@JsonManagedReference
+	@Cascade({ CascadeType.SAVE_UPDATE })
 	private Goal goal;
-
-	@Transient
-	private Long goalId;
 
 	@PrePersist
 	private void prePersist() {

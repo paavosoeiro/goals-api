@@ -1,10 +1,9 @@
 package com.bemba.goalsapi.entities;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -17,7 +16,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
 import com.bemba.goalsapi.enums.GoalStatusEnum;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -44,24 +48,40 @@ public class Goal implements Serializable {
 	private Long totalHours;
 
 	@Column
-	private Date startDate;
+	private LocalDate startDate;
 
 	@Column
-	private Date endDate;
+	private LocalDate endDate;
 
 	@Column
-	private Date deadline;
+	private LocalDate deadline;
+
+	@Column
+	private Long remainingHours;
 
 	@Enumerated(EnumType.STRING)
 	@Column
 	private GoalStatusEnum status;
 
-	@OneToMany(mappedBy = "goal", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "goal", fetch = FetchType.LAZY)
+	@Cascade({ CascadeType.SAVE_UPDATE })
+	@JsonBackReference
 	private List<Entry> entries;
 
 	@PrePersist
 	private void prePersist() {
-		status = GoalStatusEnum.OPEN;
+		status = GoalStatusEnum.OPENED;
+		startDate = LocalDate.now();
+	}
+
+	@JsonIgnore
+	public Boolean isOverdue() {
+		return LocalDate.now().isAfter(this.deadline);
+	}
+
+	@JsonIgnore
+	public Boolean isFinished() {
+		return remainingHours <= 0;
 	}
 
 }

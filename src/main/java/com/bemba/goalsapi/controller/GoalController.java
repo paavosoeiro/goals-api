@@ -36,4 +36,5 @@ public class GoalController {
 		log.info("Retrieving all goals.");
 		return ResponseEntity.ok(goalRepository.findAll());
 	}
+	
 }

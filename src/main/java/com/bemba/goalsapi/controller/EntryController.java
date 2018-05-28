@@ -1,7 +1,6 @@
 package com.bemba.goalsapi.controller;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bemba.goalsapi.entities.Entry;
@@ -22,9 +22,9 @@ import com.bemba.goalsapi.repository.EntryRepository;
 import com.bemba.goalsapi.repository.GoalRepository;
 
 @RestController
-@RequestMapping("/api/entry")
+@RequestMapping("/api/goal/{id}/entry")
 public class EntryController {
-	
+
 	private static final Logger log = LoggerFactory.getLogger(EntryController.class);
 
 	@Autowired
@@ -34,31 +34,40 @@ public class EntryController {
 	private GoalRepository goalRepository;
 
 	@PostMapping
-	public ResponseEntity<Entry> add(@RequestBody Entry entry) {
+	public ResponseEntity<Entry> add(@RequestParam("id") Long id, @RequestBody Entry entry) {
 
-		Optional<Goal> goal = goalRepository.findById(entry.getGoalId());
+		Optional<Goal> goalOpt = goalRepository.findById(id);
 
-		if (!goal.isPresent()) {
+		if (!goalOpt.isPresent()) {
+			log.info("Not found any goal with id: {}", id);
 			return ResponseEntity.notFound().build();
 		}
 
-		Long result = goal.get().getTotalHours() - entry.getHours();
+		Goal goal = goalOpt.get();
 
-		if (result > 0) {
-			if (LocalDate.now()
-					.isAfter(goal.get().getDeadline().toInstant().atZone(ZoneId.systemDefault()).toLocalDate()))
-				;
-			goal.get().setStatus(GoalStatusEnum.OVERDUE);
+		goal.setRemainingHours(goal.getTotalHours() - entry.getHours());
+
+		if (goal.isFinished()) {
+			log.info("Goal {} is finished", goal);
+			goal.setStatus(GoalStatusEnum.FINISHED);
+			goal.setEndDate(LocalDate.now());
+		} else {
+			if (goal.isOverdue()) {
+				log.info("Goal {} is overdue", goal);
+				goal.setStatus(GoalStatusEnum.OVERDUED);
+			}
+
 		}
 
-		entry.setGoal(goal.get());
-
+		entry.setGoal(goal);
+		log.info("Saving entry {} for goal {}", entry, goal);
 		Entry save = entryRepository.save(entry);
 		return ResponseEntity.ok(save);
 	}
 
 	@GetMapping
 	public ResponseEntity<List<Entry>> getAll() {
+		log.info("Retrieving all entries");
 		List<Entry> all = entryRepository.findAll();
 		return ResponseEntity.ok(all);
 	}
