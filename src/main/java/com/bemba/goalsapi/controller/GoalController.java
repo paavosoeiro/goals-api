@@ -2,6 +2,7 @@ package com.bemba.goalsapi.controller;
 
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,21 +13,27 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bemba.goalsapi.dto.GoalDto;
 import com.bemba.goalsapi.entities.Goal;
 import com.bemba.goalsapi.repository.GoalRepository;
 
 @RestController
-@RequestMapping("/api/goal")
+@RequestMapping("/goal")
 public class GoalController {
 
 	private static final Logger log = LoggerFactory.getLogger(GoalController.class);
 
 	@Autowired
 	private GoalRepository goalRepository;
+	
+	@Autowired
+	private ModelMapper mapper;
 
 	@PostMapping
-	public ResponseEntity<Goal> add(@RequestBody Goal goal) {
-		log.info("Adding new goal {}", goal);
+	public ResponseEntity<Goal> add(@RequestBody GoalDto goalDto) {
+		log.info("Adding new goal {}", goalDto);
+		Goal goal = mapper.map(goalDto, Goal.class);
+		goal.setRemainingHours(goal.getTotalHours());
 		Goal save = goalRepository.save(goal);
 		return ResponseEntity.ok(save);
 	}

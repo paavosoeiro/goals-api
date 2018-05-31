@@ -12,7 +12,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
@@ -67,6 +69,12 @@ public class Goal implements Serializable {
 	@Cascade({ CascadeType.SAVE_UPDATE })
 	@JsonBackReference
 	private List<Entry> entries;
+
+	@OneToOne
+	private Reward reward;
+	
+	@ManyToOne
+	private Person person;
 
 	@PrePersist
 	private void prePersist() {
