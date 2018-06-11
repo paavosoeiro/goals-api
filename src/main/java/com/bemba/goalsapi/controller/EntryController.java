@@ -65,7 +65,6 @@ public class EntryController {
 			}
 
 		}
-		
 
 		entry.setGoal(goal);
 		log.info("Saving entry {} for goal {}", entry, goal.getName());

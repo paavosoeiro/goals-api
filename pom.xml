@@ -10,7 +10,6 @@
 	<packaging>jar</packaging>
 
 	<name>goals-api</name>
-	<description>Demo project for Spring Boot</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -99,5 +98,5 @@
 		</plugins>
 	</build>
 
-
+	<description>API for goals management</description>
 </project>

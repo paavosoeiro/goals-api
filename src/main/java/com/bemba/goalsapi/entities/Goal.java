@@ -70,9 +70,9 @@ public class Goal implements Serializable {
 	@JsonBackReference
 	private List<Entry> entries;
 
-	@OneToOne
+	@OneToOne(cascade = javax.persistence.CascadeType.PERSIST)
 	private Reward reward;
-	
+
 	@ManyToOne
 	private Person person;
 
