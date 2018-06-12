@@ -83,8 +83,8 @@ public class GoalControllerTest {
 
 		mockMvc.perform(
 				post("/goal").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isOk()).andExpect(jsonPath("$.id").value(1L))
-				.andExpect(jsonPath("$.reward.id").value(1L));
+				.andExpect(status().isOk()).andExpect(jsonPath("$.name").value("Goal Test"))
+				.andExpect(jsonPath("$.reward.name").value("Reward Test"));
 	}
 
 	@Test
