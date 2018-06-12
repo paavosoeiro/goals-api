@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bemba.goalsapi.dto.EntryDto;
@@ -35,7 +34,7 @@ public class EntryController {
 
 	@Autowired
 	private GoalRepository goalRepository;
-	
+
 	@Autowired
 	private ModelMapper mapper;
 
@@ -73,7 +72,7 @@ public class EntryController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<Entry>> getAll(@RequestParam("goalId") Long goalId) {
+	public ResponseEntity<List<Entry>> getAll(@PathVariable("id") Long goalId) {
 		log.info("Retrieving all entries for GoalId: {}", goalId);
 		List<Entry> all = entryRepository.findByGoalId(goalId);
 		return ResponseEntity.ok(all);
