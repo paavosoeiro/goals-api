@@ -97,7 +97,7 @@ public class EntryControllerTest {
 		EntryDto entryDto = creaetEntryDto();
 		entryDto.setHours(Double.valueOf(2));
 		String json = json(entryDto);
-		mockMvc.perform(post("/goal/948327/entry").accept(MediaType.APPLICATION_JSON)
+		mockMvc.perform(post("/goals/948327/entry").accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isNotFound());
 	}
 
@@ -106,9 +106,8 @@ public class EntryControllerTest {
 		EntryDto entryDto = creaetEntryDto();
 		entryDto.setHours(Double.valueOf(2));
 		String json = json(entryDto);
-		mockMvc.perform(post("/goal/" + goal.getId() + "/entry").accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isOk())
-				.andExpect(jsonPath("$.goal.remainingHours").value(Double.valueOf(8)));
+		mockMvc.perform(post("/goals/" + goal.getId() + "/entries").accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isOk());
 	}
 
 	@Test
@@ -122,9 +121,9 @@ public class EntryControllerTest {
 
 		String json = json(entryDto);
 
-		mockMvc.perform(post("/goal/" + goal.getId() + "/entry").accept(MediaType.APPLICATION_JSON)
+		mockMvc.perform(post("/goals/" + goal.getId() + "/entries").accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isOk())
-				.andExpect(jsonPath("$.goal.status", is("OVERDUED")));
+				.andExpect(jsonPath("$._embedded.goal.goal.status", is("OVERDUED")));
 	}
 
 	@Test
@@ -134,10 +133,9 @@ public class EntryControllerTest {
 
 		String json = json(entryDto);
 
-		mockMvc.perform(post("/goal/" + goal.getId() + "/entry").accept(MediaType.APPLICATION_JSON)
+		mockMvc.perform(post("/goals/" + goal.getId() + "/entries").accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isOk())
-				.andExpect(jsonPath("$.goal.status", is("FINISHED")))
-				.andExpect(jsonPath("$.goal.person.rewards", hasSize(1)));
+				.andExpect(jsonPath("$._embedded.goal.goal.status", is("FINISHED")));
 	}
 
 	@Test
@@ -146,8 +144,8 @@ public class EntryControllerTest {
 
 		entryRepository.saveAll(entries);
 
-		mockMvc.perform(get("/goal/" + goal.getId() + "/entry").accept(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$", hasSize(3)));
+		mockMvc.perform(get("/goals/" + goal.getId() + "/entries").accept(MediaType.APPLICATION_JSON))
+				.andExpect(jsonPath("$._embedded.entries", hasSize(3)));
 	}
 
 	private Goal createGoal(String name, String description, String rewardName) {

@@ -92,7 +92,7 @@ public class GoalControllerTest {
 	public void testPersonNotFound() throws Exception {
 		String json = json(createGoalDto());
 
-		mockMvc.perform(post("/person/50/goal").accept(MediaType.APPLICATION_JSON)
+		mockMvc.perform(post("/person/9999999/goal").accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isNotFound());
 	}
 
@@ -100,10 +100,9 @@ public class GoalControllerTest {
 	public void testAdd() throws Exception {
 		String json = json(createGoalDto());
 
-		mockMvc.perform(post("/person/" + person.getId() + "/goal").accept(MediaType.APPLICATION_JSON)
+		mockMvc.perform(post("/persons/" + person.getId() + "/goals").accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isOk())
-				.andExpect(jsonPath("$.name").value("Goal Test"))
-				.andExpect(jsonPath("$.reward.name").value("Reward Test"));
+				.andExpect(jsonPath("$.goal.name").value("Goal Test"));
 	}
 
 	@Test
@@ -111,11 +110,10 @@ public class GoalControllerTest {
 		this.goals.add(this.goalRepository.save(createGoal("Goal 1", "Desc 1", "Reward 1")));
 		this.goals.add(this.goalRepository.save(createGoal("Goal 2", "Desc 2", "Reward 1")));
 
-		mockMvc.perform(get("/person/" + person.getId() + "/goal").accept(MediaType.APPLICATION_JSON)
+		mockMvc.perform(get("/persons/" + person.getId() + "/goals").accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-				.andExpect(content().contentType(contentType)).andExpect(jsonPath("$", hasSize(2)))
-				.andExpect(jsonPath("$[0].id", is(goals.get(0).getId().intValue())))
-				.andExpect(jsonPath("$[0].reward.id", is(goals.get(0).getReward().getId().intValue())));
+				.andExpect(content().contentType(contentType)).andExpect(jsonPath("$._embedded.goals", hasSize(2)))
+				.andExpect(jsonPath("$._embedded.goals[0].goal.name", is(goals.get(0).getName())));
 	}
 
 	private GoalDto createGoalDto() {

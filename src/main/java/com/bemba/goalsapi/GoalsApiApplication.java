@@ -19,4 +19,5 @@ public class GoalsApiApplication {
 	public ModelMapper modelMapper() {
 		return new ModelMapper();
 	}
+	
 }

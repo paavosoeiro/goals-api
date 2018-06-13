@@ -67,8 +67,8 @@ public class PersonControllerTest {
 	@Test
 	public void testAdd() throws Exception {
 		String json = json(createPersonDto(PERSON_NAME));
-		mockMvc.perform(post("/person").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
-				.content(json)).andExpect(status().isOk()).andExpect(jsonPath("$.name", is(PERSON_NAME)));
+		mockMvc.perform(post("/persons").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)
+				.content(json)).andExpect(status().isOk()).andExpect(jsonPath("$.person.name", is(PERSON_NAME)));
 	}
 
 	protected String json(Object o) throws IOException {
