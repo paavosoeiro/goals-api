@@ -1,7 +1,6 @@
 package com.bemba.goalsapi.entities;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -12,6 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.Cascade;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -40,18 +41,11 @@ public class Person implements Serializable {
 	@OneToMany(mappedBy = "person")
 	@JsonBackReference
 	@Singular
+	@Cascade({ org.hibernate.annotations.CascadeType.SAVE_UPDATE })
 	private List<Goal> goals;
 
 	@ManyToMany(cascade = CascadeType.ALL, targetEntity = Reward.class)
 	@Singular
 	private List<Reward> rewards;
-
-//	public List<Reward> getRewards() {
-//		if (this.rewards == null) {
-//			this.rewards = new ArrayList<>();
-//		}
-//
-//		return this.rewards;
-//	}
 
 }

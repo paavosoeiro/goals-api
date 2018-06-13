@@ -39,6 +39,7 @@ import com.bemba.goalsapi.entities.Reward;
 import com.bemba.goalsapi.enums.GoalStatusEnum;
 import com.bemba.goalsapi.repository.EntryRepository;
 import com.bemba.goalsapi.repository.GoalRepository;
+import com.bemba.goalsapi.repository.PersonRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -47,6 +48,8 @@ import com.bemba.goalsapi.repository.GoalRepository;
 public class EntryControllerTest {
 
 	private static final String REWARD_NAME = "Reward Goal Test";
+	
+	private static final String PERSON_NAME = "Person Name";
 
 	private MockMvc mockMvc;
 
@@ -60,12 +63,18 @@ public class EntryControllerTest {
 
 	@Autowired
 	private EntryRepository entryRepository;
+	
+	@Autowired
+	private PersonRepository personRepository;
 
 	private Goal goal;
+	
+	private Person person;
 
 	@Before
 	public void setUp() {
 		this.mockMvc = webAppContextSetup(webApplicationContext).build();
+		this.person = personRepository.save(createPerson(PERSON_NAME));
 		this.goal = goalRepository.save(createGoal("Goal Test", "Goal Description", REWARD_NAME));
 	}
 
@@ -145,9 +154,7 @@ public class EntryControllerTest {
 		reward.setName(rewardName);
 		goal.setReward(reward);
 
-		Person p = new Person();
-		p.setName("Person Name");
-		goal.setPerson(p);
+		goal.setPerson(person);
 
 		return goal;
 	}
@@ -168,6 +175,12 @@ public class EntryControllerTest {
 		}
 
 		return entries;
+	}
+	
+	private Person createPerson(String name) {
+		Person p = new Person();
+		p.setName(name);
+		return p;
 	}
 
 	protected String json(Object o) throws IOException {

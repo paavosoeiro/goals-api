@@ -129,7 +129,6 @@ public class GoalControllerTest {
 		goal.setRemainingHours(10L);
 		goal.setStatus(GoalStatusEnum.OPENED);
 		goal.setPerson(person);
-
 		Reward reward = new Reward();
 		reward.setName(rewardName);
 

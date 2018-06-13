@@ -72,9 +72,10 @@ public class Goal implements Serializable {
 	private List<Entry> entries;
 
 	@OneToOne(cascade = javax.persistence.CascadeType.PERSIST)
+	@Cascade({ CascadeType.SAVE_UPDATE })
 	private Reward reward;
 
-	@ManyToOne(cascade = javax.persistence.CascadeType.PERSIST)
+	@ManyToOne
 	@Cascade({ CascadeType.SAVE_UPDATE })
 	@JsonManagedReference
 	private Person person;
