@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bemba.goalsapi.dto.GoalDto;
 import com.bemba.goalsapi.entities.Goal;
 import com.bemba.goalsapi.entities.Person;
+import com.bemba.goalsapi.exceptions.PersonNotFoundException;
 import com.bemba.goalsapi.repository.GoalRepository;
 import com.bemba.goalsapi.repository.PersonRepository;
 
@@ -39,14 +40,12 @@ public class GoalController {
 	@PostMapping
 	public ResponseEntity<Goal> add(@PathVariable("id") Long id, @RequestBody GoalDto goalDto) {
 		log.info("Finding person for id {}", id);
+
+		validatePerson(id);
+
 		Optional<Person> personOpt = personRepository.findById(id);
 
-		if (!personOpt.isPresent()) {
-			log.error("Person not found!");
-			return ResponseEntity.notFound().build();
-		}
-
-		log.info("Adding new goal {}", goalDto);
+		log.info("Adding new goal {} for: ", goalDto, personOpt.get().getName());
 		Goal goal = mapper.map(goalDto, Goal.class);
 
 		Person person = personOpt.get();
@@ -60,9 +59,15 @@ public class GoalController {
 
 	@GetMapping
 	public ResponseEntity<List<Goal>> getAll(@PathVariable("id") Long id) {
-		log.info("Retrieving all goals for person.");
+		log.info("Retrieving all goals for personID: {}", id);
+
+		validatePerson(id);
 
 		return ResponseEntity.ok(goalRepository.findByPersonId(id));
+	}
+
+	private void validatePerson(Long personId) {
+		personRepository.findById(personId).orElseThrow(() -> new PersonNotFoundException(personId.toString()));
 	}
 
 }

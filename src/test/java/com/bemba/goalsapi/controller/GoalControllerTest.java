@@ -89,6 +89,14 @@ public class GoalControllerTest {
 	}
 
 	@Test
+	public void testPersonNotFound() throws Exception {
+		String json = json(createGoalDto());
+
+		mockMvc.perform(post("/person/50/goal").accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isNotFound());
+	}
+
+	@Test
 	public void testAdd() throws Exception {
 		String json = json(createGoalDto());
 

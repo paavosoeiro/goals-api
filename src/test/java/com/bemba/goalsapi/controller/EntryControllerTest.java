@@ -48,7 +48,7 @@ import com.bemba.goalsapi.repository.PersonRepository;
 public class EntryControllerTest {
 
 	private static final String REWARD_NAME = "Reward Goal Test";
-	
+
 	private static final String PERSON_NAME = "Person Name";
 
 	private MockMvc mockMvc;
@@ -63,12 +63,12 @@ public class EntryControllerTest {
 
 	@Autowired
 	private EntryRepository entryRepository;
-	
+
 	@Autowired
 	private PersonRepository personRepository;
 
 	private Goal goal;
-	
+
 	private Person person;
 
 	@Before
@@ -90,6 +90,15 @@ public class EntryControllerTest {
 		this.httpMessageConverter = (HttpMessageConverter<Object>) Arrays.asList(converters).stream()
 				.filter(hmc -> hmc instanceof MappingJackson2HttpMessageConverter).findAny().orElse(null);
 		assertNotNull("the JSON message converter must not be null", this.httpMessageConverter);
+	}
+
+	@Test
+	public void testGoalNotFound() throws Exception {
+		EntryDto entryDto = creaetEntryDto();
+		entryDto.setHours(Double.valueOf(2));
+		String json = json(entryDto);
+		mockMvc.perform(post("/goal/948327/entry").accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isNotFound());
 	}
 
 	@Test
@@ -176,7 +185,7 @@ public class EntryControllerTest {
 
 		return entries;
 	}
-	
+
 	private Person createPerson(String name) {
 		Person p = new Person();
 		p.setName(name);

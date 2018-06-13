@@ -21,6 +21,7 @@ import com.bemba.goalsapi.entities.Entry;
 import com.bemba.goalsapi.entities.Goal;
 import com.bemba.goalsapi.entities.Person;
 import com.bemba.goalsapi.enums.GoalStatusEnum;
+import com.bemba.goalsapi.exceptions.GoalNotFoundException;
 import com.bemba.goalsapi.repository.EntryRepository;
 import com.bemba.goalsapi.repository.GoalRepository;
 
@@ -42,12 +43,9 @@ public class EntryController {
 	@PostMapping
 	public ResponseEntity<Entry> add(@PathVariable("id") Long id, @RequestBody EntryDto entryDto) {
 
+		validateGoal(id);
+		
 		Optional<Goal> goalOpt = goalRepository.findById(id);
-
-		if (!goalOpt.isPresent()) {
-			log.info("Not found any goal with id: {}", id);
-			return ResponseEntity.notFound().build();
-		}
 
 		Goal goal = goalOpt.get();
 		Entry entry = mapper.map(entryDto, Entry.class);
@@ -77,8 +75,13 @@ public class EntryController {
 	@GetMapping
 	public ResponseEntity<List<Entry>> getAll(@PathVariable("id") Long goalId) {
 		log.info("Retrieving all entries for GoalId: {}", goalId);
+		validateGoal(goalId);
 		List<Entry> all = entryRepository.findByGoalId(goalId);
 		return ResponseEntity.ok(all);
+	}
+
+	private void validateGoal(Long goalId) {
+		this.goalRepository.findById(goalId).orElseThrow(() -> new GoalNotFoundException(goalId.toString()));
 	}
 
 }
