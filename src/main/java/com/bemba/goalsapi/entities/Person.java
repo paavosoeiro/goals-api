@@ -1,6 +1,7 @@
 package com.bemba.goalsapi.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -12,12 +13,19 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Singular;
 
 @Data
 @NoArgsConstructor
 @Entity
+@Builder
+@AllArgsConstructor
 public class Person implements Serializable {
 
 	private static final long serialVersionUID = 2316922936433646399L;
@@ -30,9 +38,20 @@ public class Person implements Serializable {
 	private String name;
 
 	@OneToMany(mappedBy = "person")
+	@JsonBackReference
+	@Singular
 	private List<Goal> goals;
 
 	@ManyToMany(cascade = CascadeType.ALL, targetEntity = Reward.class)
+	@Singular
 	private List<Reward> rewards;
+
+//	public List<Reward> getRewards() {
+//		if (this.rewards == null) {
+//			this.rewards = new ArrayList<>();
+//		}
+//
+//		return this.rewards;
+//	}
 
 }

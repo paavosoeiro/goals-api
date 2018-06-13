@@ -1,6 +1,7 @@
 package com.bemba.goalsapi.controller;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -34,9 +35,11 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.bemba.goalsapi.dto.GoalDto;
 import com.bemba.goalsapi.entities.Goal;
+import com.bemba.goalsapi.entities.Person;
 import com.bemba.goalsapi.entities.Reward;
 import com.bemba.goalsapi.enums.GoalStatusEnum;
 import com.bemba.goalsapi.repository.GoalRepository;
+import com.bemba.goalsapi.repository.PersonRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -46,6 +49,8 @@ public class GoalControllerTest {
 
 	private MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
 			MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
+
+	private static final String PERSON_NAME = "Person Name";
 
 	private MockMvc mockMvc;
 
@@ -57,11 +62,17 @@ public class GoalControllerTest {
 	@Autowired
 	private GoalRepository goalRepository;
 
+	@Autowired
+	private PersonRepository personRepository;
+
 	private List<Goal> goals = new ArrayList<>();
+
+	private Person person;
 
 	@Before
 	public void setUp() {
 		this.mockMvc = webAppContextSetup(webApplicationContext).build();
+		this.person = personRepository.save(createPerson(PERSON_NAME));
 	}
 
 	@After
@@ -81,9 +92,9 @@ public class GoalControllerTest {
 	public void testAdd() throws Exception {
 		String json = json(createGoalDto());
 
-		mockMvc.perform(
-				post("/goal").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(json))
-				.andExpect(status().isOk()).andExpect(jsonPath("$.name").value("Goal Test"))
+		mockMvc.perform(post("/person/" + person.getId() + "/goal").accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isOk())
+				.andExpect(jsonPath("$.name").value("Goal Test"))
 				.andExpect(jsonPath("$.reward.name").value("Reward Test"));
 	}
 
@@ -92,9 +103,9 @@ public class GoalControllerTest {
 		this.goals.add(this.goalRepository.save(createGoal("Goal 1", "Desc 1", "Reward 1")));
 		this.goals.add(this.goalRepository.save(createGoal("Goal 2", "Desc 2", "Reward 1")));
 
-		mockMvc.perform(get("/goal").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isOk()).andExpect(content().contentType(contentType))
-				.andExpect(jsonPath("$", hasSize(2)))
+		mockMvc.perform(get("/person/" + person.getId() + "/goal").accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(content().contentType(contentType)).andExpect(jsonPath("$", hasSize(2)))
 				.andExpect(jsonPath("$[0].id", is(goals.get(0).getId().intValue())))
 				.andExpect(jsonPath("$[0].reward.id", is(goals.get(0).getReward().getId().intValue())));
 	}
@@ -117,6 +128,7 @@ public class GoalControllerTest {
 		goal.setTotalHours(10L);
 		goal.setRemainingHours(10L);
 		goal.setStatus(GoalStatusEnum.OPENED);
+		goal.setPerson(person);
 
 		Reward reward = new Reward();
 		reward.setName(rewardName);
@@ -124,6 +136,12 @@ public class GoalControllerTest {
 		goal.setReward(reward);
 
 		return goal;
+	}
+
+	private Person createPerson(String name) {
+		Person p = new Person();
+		p.setName(name);
+		return p;
 	}
 
 	protected String json(Object o) throws IOException {

@@ -24,6 +24,7 @@ import org.hibernate.annotations.CascadeType;
 import com.bemba.goalsapi.enums.GoalStatusEnum;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -73,7 +74,9 @@ public class Goal implements Serializable {
 	@OneToOne(cascade = javax.persistence.CascadeType.PERSIST)
 	private Reward reward;
 
-	@ManyToOne
+	@ManyToOne(cascade = javax.persistence.CascadeType.PERSIST)
+	@Cascade({ CascadeType.SAVE_UPDATE })
+	@JsonManagedReference
 	private Person person;
 
 	@PrePersist

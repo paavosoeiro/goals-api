@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bemba.goalsapi.dto.EntryDto;
 import com.bemba.goalsapi.entities.Entry;
 import com.bemba.goalsapi.entities.Goal;
+import com.bemba.goalsapi.entities.Person;
 import com.bemba.goalsapi.enums.GoalStatusEnum;
 import com.bemba.goalsapi.repository.EntryRepository;
 import com.bemba.goalsapi.repository.GoalRepository;
@@ -57,6 +58,8 @@ public class EntryController {
 			log.info("Goal {} is finished", goal.getName());
 			goal.setStatus(GoalStatusEnum.FINISHED);
 			goal.setEndDate(LocalDate.now());
+			Person person = goal.getPerson();
+			person.getRewards().add(goal.getReward());
 		} else {
 			if (goal.isOverdue()) {
 				log.info("Goal {} is overdue", goal.getName());

@@ -1,6 +1,7 @@
 package com.bemba.goalsapi.controller;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -33,6 +34,7 @@ import org.springframework.web.context.WebApplicationContext;
 import com.bemba.goalsapi.dto.EntryDto;
 import com.bemba.goalsapi.entities.Entry;
 import com.bemba.goalsapi.entities.Goal;
+import com.bemba.goalsapi.entities.Person;
 import com.bemba.goalsapi.entities.Reward;
 import com.bemba.goalsapi.enums.GoalStatusEnum;
 import com.bemba.goalsapi.repository.EntryRepository;
@@ -43,6 +45,8 @@ import com.bemba.goalsapi.repository.GoalRepository;
 @WebAppConfiguration
 @ActiveProfiles("test")
 public class EntryControllerTest {
+
+	private static final String REWARD_NAME = "Reward Goal Test";
 
 	private MockMvc mockMvc;
 
@@ -62,7 +66,7 @@ public class EntryControllerTest {
 	@Before
 	public void setUp() {
 		this.mockMvc = webAppContextSetup(webApplicationContext).build();
-		this.goal = goalRepository.save(createGoal("Goal Test", "Goal Description", "Reward Goal Test"));
+		this.goal = goalRepository.save(createGoal("Goal Test", "Goal Description", REWARD_NAME));
 	}
 
 	@After
@@ -114,7 +118,8 @@ public class EntryControllerTest {
 
 		mockMvc.perform(post("/goal/" + goal.getId() + "/entry").accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isOk())
-				.andExpect(jsonPath("$.goal.status", is("FINISHED")));
+				.andExpect(jsonPath("$.goal.status", is("FINISHED")))
+				.andExpect(jsonPath("$.goal.person.rewards", hasSize(1)));
 	}
 
 	@Test
@@ -138,8 +143,11 @@ public class EntryControllerTest {
 
 		Reward reward = new Reward();
 		reward.setName(rewardName);
-
 		goal.setReward(reward);
+
+		Person p = new Person();
+		p.setName("Person Name");
+		goal.setPerson(p);
 
 		return goal;
 	}
