@@ -7,5 +7,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class EntryDto {
 
-	private Long hours;
+	private Double hours;
 }

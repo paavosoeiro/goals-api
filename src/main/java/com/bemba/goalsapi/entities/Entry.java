@@ -33,7 +33,7 @@ public class Entry implements Serializable {
 	private Long id;
 
 	@Column
-	private Long hours;
+	private Double hours;
 
 	@Column
 	private LocalDate date;

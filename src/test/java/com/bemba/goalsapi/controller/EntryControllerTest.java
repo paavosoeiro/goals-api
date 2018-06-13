@@ -95,11 +95,11 @@ public class EntryControllerTest {
 	@Test
 	public void testAdd() throws Exception {
 		EntryDto entryDto = creaetEntryDto();
-		entryDto.setHours(2L);
+		entryDto.setHours(Double.valueOf(2));
 		String json = json(entryDto);
 		mockMvc.perform(post("/goal/" + goal.getId() + "/entry").accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON).content(json)).andExpect(status().isOk())
-				.andExpect(jsonPath("$.goal.remainingHours").value(8L));
+				.andExpect(jsonPath("$.goal.remainingHours").value(Double.valueOf(8)));
 	}
 
 	@Test
@@ -109,7 +109,7 @@ public class EntryControllerTest {
 		goal = goalRepository.save(goal);
 
 		EntryDto entryDto = creaetEntryDto();
-		entryDto.setHours(2L);
+		entryDto.setHours(Double.valueOf(2));
 
 		String json = json(entryDto);
 
@@ -121,7 +121,7 @@ public class EntryControllerTest {
 	@Test
 	public void testAddFinished() throws Exception {
 		EntryDto entryDto = creaetEntryDto();
-		entryDto.setHours(10L);
+		entryDto.setHours(Double.valueOf(10));
 
 		String json = json(entryDto);
 
@@ -133,7 +133,7 @@ public class EntryControllerTest {
 
 	@Test
 	public void testGetAll() throws Exception {
-		List<Entry> entries = createEntries(goal, 1L, 2L, 4L);
+		List<Entry> entries = createEntries(goal, Double.valueOf(1), Double.valueOf(2), Double.valueOf(4));
 
 		entryRepository.saveAll(entries);
 
@@ -146,8 +146,8 @@ public class EntryControllerTest {
 		goal.setName(name);
 		goal.setDescription(description);
 		goal.setDeadline(LocalDate.of(2018, 06, 20));
-		goal.setTotalHours(10L);
-		goal.setRemainingHours(10L);
+		goal.setTotalHours(Double.valueOf(10));
+		goal.setRemainingHours(Double.valueOf(10));
 		goal.setStatus(GoalStatusEnum.OPENED);
 
 		Reward reward = new Reward();
@@ -164,10 +164,10 @@ public class EntryControllerTest {
 		return entryDto;
 	}
 
-	private List<Entry> createEntries(Goal goal, Long... hours) {
+	private List<Entry> createEntries(Goal goal, Double... hours) {
 		List<Entry> entries = new ArrayList<>();
 
-		for (Long hour : hours) {
+		for (Double hour : hours) {
 			Entry entry = new Entry();
 			entry.setHours(hour);
 			entry.setGoal(goal);

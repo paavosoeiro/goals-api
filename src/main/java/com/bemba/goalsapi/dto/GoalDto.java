@@ -15,7 +15,7 @@ public class GoalDto {
 	
 	private LocalDate deadline;
 	
-	private Long totalHours;
+	private Double totalHours;
 	
 	private String rewardName;
 }

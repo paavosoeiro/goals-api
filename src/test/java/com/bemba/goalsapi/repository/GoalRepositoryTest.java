@@ -37,7 +37,7 @@ public class GoalRepositoryTest {
 		goal.setName("Goal Test");
 		goal.setDescription("Goal description");
 		goal.setDeadline(LocalDate.of(2018, 6, 20));
-		goal.setTotalHours(20L);
+		goal.setTotalHours(Double.valueOf(20));
 	}
 
 	@Test

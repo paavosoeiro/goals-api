@@ -48,7 +48,7 @@ public class Goal implements Serializable {
 	private String description;
 
 	@Column
-	private Long totalHours;
+	private Double totalHours;
 
 	@Column
 	private LocalDate startDate;
@@ -60,7 +60,7 @@ public class Goal implements Serializable {
 	private LocalDate deadline;
 
 	@Column
-	private Long remainingHours;
+	private Double remainingHours;
 
 	@Enumerated(EnumType.STRING)
 	@Column

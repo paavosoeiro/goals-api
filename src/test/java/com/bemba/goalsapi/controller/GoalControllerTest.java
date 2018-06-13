@@ -115,7 +115,7 @@ public class GoalControllerTest {
 		goalDto.setName("Goal Test");
 		goalDto.setDescription("Goal Description");
 		goalDto.setDeadline(LocalDate.of(2018, 06, 20));
-		goalDto.setTotalHours(10L);
+		goalDto.setTotalHours(10d);
 		goalDto.setRewardName("Reward Test");
 		return goalDto;
 	}
@@ -125,8 +125,8 @@ public class GoalControllerTest {
 		goal.setName(name);
 		goal.setDescription(description);
 		goal.setDeadline(LocalDate.of(2018, 06, 20));
-		goal.setTotalHours(10L);
-		goal.setRemainingHours(10L);
+		goal.setTotalHours(Double.valueOf(10));
+		goal.setRemainingHours(Double.valueOf(10));
 		goal.setStatus(GoalStatusEnum.OPENED);
 		goal.setPerson(person);
 		Reward reward = new Reward();
