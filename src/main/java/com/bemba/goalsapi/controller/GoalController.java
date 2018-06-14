@@ -76,7 +76,7 @@ public class GoalController {
 		log.info("Retrieving all goals for personID: {}", id);
 
 		validatePerson(id);
-
+		
 		Iterable<Goal> list = goalRepository.findByPersonId(id);
 
 		Resources<GoalResource> resources = goalResourceAssembler.toEmbeddedListWithId(list, id);

@@ -61,7 +61,7 @@ public class PersonControllerTest {
 
 	@After
 	public void tearDown() {
-		this.personRepository.deleteAllInBatch();
+		this.personRepository.deleteAll();
 	}
 
 	@Test

@@ -28,7 +28,7 @@ public class GoalRepositoryTest {
 
 	@After
 	public void tearDown() {
-		goalRepository.deleteAllInBatch();
+		goalRepository.deleteAll();
 	}
 
 	@Before

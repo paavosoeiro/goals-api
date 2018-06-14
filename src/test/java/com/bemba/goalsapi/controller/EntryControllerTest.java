@@ -80,8 +80,8 @@ public class EntryControllerTest {
 
 	@After
 	public void tearDown() {
-		this.entryRepository.deleteAllInBatch();
-		this.goalRepository.deleteAllInBatch();
+		this.entryRepository.deleteAll();
+		this.goalRepository.deleteAll();
 	}
 
 	@Autowired

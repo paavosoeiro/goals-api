@@ -77,7 +77,7 @@ public class GoalControllerTest {
 
 	@After
 	public void tearDown() {
-		this.goalRepository.deleteAllInBatch();
+		this.goalRepository.deleteAll();
 	}
 
 	@Autowired

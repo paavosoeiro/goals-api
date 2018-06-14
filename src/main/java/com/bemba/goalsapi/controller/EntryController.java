@@ -29,7 +29,7 @@ import com.bemba.goalsapi.resources.EntryResource;
 import com.bemba.goalsapi.resources.assemblers.EntryResourceAssembler;
 
 @RestController
-@ExposesResourceFor(EntryResourceAssembler.class)
+@ExposesResourceFor(EntryResource.class)
 @RequestMapping("/goals/{id}/entries")
 public class EntryController {
 
