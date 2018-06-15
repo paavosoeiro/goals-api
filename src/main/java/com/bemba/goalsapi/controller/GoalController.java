@@ -6,8 +6,11 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.ExposesResourceFor;
-import org.springframework.hateoas.Resources;
+import org.springframework.hateoas.PagedResources;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -72,16 +75,17 @@ public class GoalController {
 	}
 
 	@GetMapping
-	public ResponseEntity<Resources<GoalResource>> getAll(@PathVariable("id") Long id) {
+	public ResponseEntity<PagedResources<GoalResource>> getAll(@PathVariable("id") Long id,
+			PagedResourcesAssembler<Goal> pagedResourcesAssembler, Pageable pageable) {
 		log.info("Retrieving all goals for personID: {}", id);
 
 		validatePerson(id);
+
+		Page<Goal> list = goalRepository.findByPersonId(id, pageable);
 		
-		Iterable<Goal> list = goalRepository.findByPersonId(id);
+		PagedResources<GoalResource> resource = pagedResourcesAssembler.toResource(list, goalResourceAssembler);
 
-		Resources<GoalResource> resources = goalResourceAssembler.toEmbeddedListWithId(list, id);
-
-		return ResponseEntity.ok(resources);
+		return ResponseEntity.ok(resource);
 	}
 
 	@GetMapping("/{goalId}")

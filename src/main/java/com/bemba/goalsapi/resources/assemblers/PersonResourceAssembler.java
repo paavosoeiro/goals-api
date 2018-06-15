@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityLinks;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RelProvider;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import com.bemba.goalsapi.controller.GoalController;
 import com.bemba.goalsapi.controller.PersonController;
+import com.bemba.goalsapi.entities.Goal;
 import com.bemba.goalsapi.entities.Person;
 import com.bemba.goalsapi.resources.GoalResource;
 import com.bemba.goalsapi.resources.PersonResource;
@@ -36,7 +38,7 @@ public class PersonResourceAssembler
 	public PersonResource toResource(Person entity) {
 		final PersonResource personResource = createResourceWithId(entity.getId(), entity);
 		String resourceRelFor = relProvider.getCollectionResourceRelFor(GoalResource.class);
-		Link personGoals = linkTo(methodOn(GoalController.class).getAll(entity.getId())).withRel(resourceRelFor);
+		Link personGoals = linkTo(methodOn(GoalController.class).getAll(entity.getId(), new PagedResourcesAssembler<Goal>(null, null), null)).withRel(resourceRelFor);
 		personResource.add(personGoals);
 
 		return personResource;

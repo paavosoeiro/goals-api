@@ -66,8 +66,14 @@ public class GoalResourceAssembler extends EmbeddableResourceAssemblerSupport<Go
 
 	@Override
 	public Resources<GoalResource> toEmbeddedListWithId(Iterable<Goal> entities, Long id) {
-		final List<GoalResource> resources = toResources(entities);
-		return new Resources<GoalResource>(resources, linkTo(methodOn(GoalController.class).getAll(id)).withSelfRel());
+		// TODO Auto-generated method stub
+		return null;
 	}
+
+//	@Override
+//	public Resources<GoalResource> toEmbeddedListWithId(Iterable<Goal> entities, Long id) {
+//		final List<GoalResource> resources = toResources(entities);
+//		return new Resources<GoalResource>(resources, linkTo(methodOn(GoalController.class).getAll(id)).withSelfRel());
+//	}
 
 }
